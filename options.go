@@ -85,8 +85,19 @@ func (o *Options) parseDate(s string) (time.Time, bool) {
 	return t, true
 }
 
-func (o *Options) setAbsDir() {
-	// 改为绝对路径
+// setAbsDir 计算导出根目录的绝对路径。
+// outOverride 为命令行 -o/--out 指定的目录，非空时优先使用（按进程工作目录解析为绝对路径）；
+// 为空时保持历史行为：以程序所在目录为基准拼接配置文件中的 dir。
+func (o *Options) setAbsDir(outOverride string) {
+	if outOverride != "" {
+		abs, err := filepath.Abs(outOverride)
+		if err != nil {
+			log.Fatalf("导出根目录路径解析失败(%s): %s\n", outOverride, err.Error())
+		}
+		o.absDir = abs
+		return
+	}
+	// 历史行为：改为绝对路径，相对于程序所在目录
 	o.absDir = filepath.Join(GetCurrentDirectory(), o.Dir)
 }
 

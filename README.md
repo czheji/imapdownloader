@@ -35,13 +35,29 @@ prefixes:
  - 已发送
 ```
 ### 2、运行
-程序默认读取同目录下的config.yaml文件。
+程序默认读取**程序同目录**下的 `config.yaml`，导出根目录取配置中的 `dir`（相对于程序所在目录）。
+也可通过命令行参数指定配置文件与导出目录，不传则保持上述默认行为。
 程序可多次运行，自动跳过已下载邮件
+
+**最简单的方式（Windows）：直接把 `config.yaml` 拖到 `imapdownloader.exe` 图标上松手**，
+程序会读取该配置文件，并把**配置文件所在目录**作为邮件导出根目录（即邮件备份到配置文件旁边）。
+
+命令行方式：
 ```shell
-./imapdownloader
+./imapdownloader                                  # 默认：读同目录 config.yaml
+./imapdownloader -c /path/to/my.yaml -o /path/to/backup
+./imapdownloader --config my.yaml --out D:\mail\backup
+./imapdownloader /path/to/config.yaml             # 等效于拖拽：配置所在目录即导出根目录
 ```
+
+| 参数 | 说明 |
+| --- | --- |
+| `-c, --config` | 配置文件路径，默认 `config.yaml` |
+| `-o, --out` | 邮件导出根目录，缺省则使用配置文件中的 `dir`（相对程序所在目录）；传入相对路径时按当前工作目录解析 |
+| 位置参数（拖拽） | 把配置文件路径直接传给程序（或拖到 exe 上），自动以该文件为配置、其所在目录为导出根目录；已显式指定的 `-c/-o` 优先 |
+
 ### 3、查看备份结果
-   下载的邮件会按日期存储在 **backup** 目录下，双击即可打开 `.eml` 文件。
+   下载的邮件会按日期存储在导出根目录下，双击即可打开 `.eml` 文件（默认即配置中的 `backup` 目录）。
 
 ### 4、备份文件再次备份
    如有需要，可以将`backup`文件夹压缩备份到您喜欢的云盘、U盘、硬盘上。
